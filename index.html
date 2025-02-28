@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Table from JSON Passed via URL</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h2>Generated Table from JSON Data</h2>
+    <table id="jsonTable"></table>
+
+    <script>
+        // Get the query string from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const encodedData = urlParams.get('data');
+
+        if (encodedData) {
+            // Decode and parse the JSON data
+            const jsonData = JSON.parse(decodeURIComponent(encodedData));
+
+            // Get the table element
+            const table = document.getElementById('jsonTable');
+
+            // Clear any existing table content
+            table.innerHTML = '';
+
+            // Create the header row based on the keys of the first object
+            if (jsonData.length > 0) {
+                const headerRow = table.insertRow();
+                const keys = Object.keys(jsonData[0]);
+                keys.forEach(key => {
+                    const th = document.createElement('th');
+                    th.textContent = key;
+                    headerRow.appendChild(th);
+                });
+
+                // Create rows for each object in the JSON array
+                jsonData.forEach(item => {
+                    const row = table.insertRow();
+                    keys.forEach(key => {
+                        const cell = row.insertCell();
+                        cell.textContent = item[key];
+                    });
+                });
+            }
+        } else {
+            alert("No JSON data found in the URL.");
+        }
+    </script>
+</body>
+</html>
